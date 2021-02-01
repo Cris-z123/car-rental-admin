@@ -33,7 +33,7 @@
         </div>
         <!-- 表格数据 -->
         <el-table :data="tableData" border style="width: 100%">
-            <el-table-column type="selection" width="35"></el-table-column>
+            <el-table-column type="selection" width="40"></el-table-column>
             <el-table-column prop="name" label="停车场名称"></el-table-column>
             <el-table-column prop="type" label="类型"></el-table-column>
             <el-table-column prop="area" label="区域"></el-table-column>
@@ -45,7 +45,7 @@
             </el-table-column>
             <el-table-column prop="address" label="查看位置"></el-table-column>
             <el-table-column label="操作">
-                <template slot-scope="scope">
+                <template>
                     <el-button type="danger" size="small">编辑</el-button>
                     <el-button size="small">删除</el-button>
                 </template>

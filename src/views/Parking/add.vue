@@ -76,7 +76,10 @@ export default {
 </script>
 <style lass="scss" scoped>
 .address-map {
-    width: 100%;
-    height: 500px;
+    width: 80%;
+    height: 400px;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    overflow: hidden;
 }
 </style>

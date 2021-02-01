@@ -115,15 +115,15 @@ export default {
     data() {
       return {
 				// 富文本对象
-				editor: null,
-				cars_attr: [
-					{ key1: 111, value1: 222 },
-					{ key2: 111, value2: 222 },
-					{ key3: 111, value3: 222 },
-					{ key4: 111, value4: 222 },
-				],
+			editor: null,
+			cars_attr: [
+				{ key1: 111, value1: 222 },
+				{ key2: 111, value2: 222 },
+				{ key3: 111, value3: 222 },
+				{ key4: 111, value4: 222 },
+			],
         form: {
-					energy: 1,
+          energy: 1,
           name: '',
           region: '',
           date1: '',
