@@ -7,3 +7,11 @@ export function parkingAdd(data = {}) {
         data
     })
 }
+
+export function parkingList(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/parking/list",
+        data
+    })
+}
