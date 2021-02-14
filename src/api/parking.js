@@ -15,3 +15,11 @@ export function parkingList(data = {}) {
         data
     })
 }
+
+export function parkingDetailed(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/parking/detailed",
+        data
+    })
+}

@@ -34,11 +34,20 @@ export default {
     });
   },
   methods: {
+    mapCreate(params) {
+      this.map = new AMap.Map("amapContainer", {
+        center: [116.404765, 39.918052],
+        zoom: this.zoom, //初始化地图层级
+      });
+    },
+    mapDestroy() {
+      this.map && this.map.destroy();
+    },
     setMapCenter(value) {
       addressSetMapCenter(value, this.map);
     },
-    setMarker() {
-      amapSetMarker(this.lnglat, this.map);
+    setMarker(lnglat) {
+      amapSetMarker(lnglat || this.lnglat, this.map);
     },
     clearMarker() {
       amapClearMarker(this.map);

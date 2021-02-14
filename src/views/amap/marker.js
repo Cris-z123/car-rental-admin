@@ -7,10 +7,11 @@ export function amapSetMarker(lnglat, map) {
     marker = new AMap.Marker({
         position: [lnglat.lng, lnglat.lat]
     })
-    map.add(marker)
+    map.add(marker);
+    map.setFitView();
 }
 
-export function amapClearMarket(map) {
+export function amapClearMarker(map) {
     if (marker) {
         map.remove(marker)
         marker = null

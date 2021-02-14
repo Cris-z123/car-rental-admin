@@ -14,8 +14,12 @@
       </el-form-item>
       <el-form-item label="类型">
         <el-radio-group v-model="form.type">
-          <el-radio label="1">室内</el-radio>
-          <el-radio label="2">室外</el-radio>
+          <el-radio
+            v-for="item in type"
+            :label="item.value"
+            :key="item.value"
+            >{{ item.label }}</el-radio
+          >
         </el-radio-group>
       </el-form-item>
       <el-form-item label="可停放车辆" prop="carsNumber">
@@ -23,8 +27,12 @@
       </el-form-item>
       <el-form-item label="禁启用">
         <el-radio-group v-model="form.status">
-          <el-radio label="1">禁用</el-radio>
-          <el-radio label="2">启用</el-radio>
+          <el-radio
+            v-for="item in status"
+            :label="item.value"
+            :key="item.value"
+            >{{ item.label }}</el-radio
+          >
         </el-radio-group>
       </el-form-item>
       <el-form-item label="位置">
@@ -56,6 +64,8 @@ export default {
   name: "ParkingAdd",
   data() {
     return {
+      status: this.$store.state.config.parking_status,
+      type: this.$store.state.config.parking_type,
       form: {
         parkingName: "",
         area: "",
