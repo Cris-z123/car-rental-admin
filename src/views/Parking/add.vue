@@ -37,7 +37,12 @@
       </el-form-item>
       <el-form-item label="位置">
         <div class="address-map">
-          <AMap ref="amap" @getLngLat="lnglatValue" />
+          <AMap
+            ref="amap"
+            :options="option_map"
+            @callback="callbackComponent"
+            @getLngLat="lnglatValue"
+          />
         </div>
       </el-form-item>
       <el-form-item label="经纬度" prop="lnglat">
@@ -59,13 +64,17 @@
 import AMap from "../amap";
 // 组件
 import CityArea from "@c/common/cityArea";
-import { parkingAdd } from "@/api/parking";
+import { parkingAdd, parkingDetailed, parkingEdit } from "@/api/parking";
 export default {
   name: "ParkingAdd",
   data() {
     return {
+      id: this.$route.query.id,
       status: this.$store.state.config.parking_status,
       type: this.$store.state.config.parking_type,
+      option_map: {
+        mapLoad: true,
+      },
       form: {
         parkingName: "",
         area: "",
@@ -89,6 +98,7 @@ export default {
     };
   },
   components: { AMap, CityArea },
+  beforeMount() {},
   mounted() {},
   methods: {
     callbackComponent(params) {
@@ -96,13 +106,16 @@ export default {
         this[params.function](params.data);
       }
     },
+    mapLoad() {
+      this.getDetaile();
+    },
     setMapCenter(data) {
       this.$refs.amap.setMapCenter(data.address);
     },
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.addParking();
+          this.id ? this.editParking() : this.addParking();
         } else {
           console.log("error submit");
           return false;
@@ -113,7 +126,6 @@ export default {
       this.button_loading = true;
       parkingAdd(this.form)
         .then((response) => {
-          console.log(response);
           this.$message({
             type: "primary",
             message: response.message,
@@ -124,6 +136,44 @@ export default {
         .catch((error) => {
           this.button_loading = false;
         });
+    },
+    editParking() {
+      let requestData = JSON.parse(JSON.stringify(this.form));
+      requestData.id = this.id;
+      this.button_loading = true;
+      parkingEdit(requestData)
+        .then((response) => {
+          this.$message({
+            type: "primary",
+            message: response.message,
+          });
+          this.button_loading = false;
+          this.$router.push({
+            name: ParingIndex,
+          });
+        })
+        .catch((error) => {
+          this.button_loading = false;
+        });
+    },
+    getDetaile() {
+      parkingDetailed({ id: this.id })
+        .then((response) => {
+          const data = response.data;
+          for (let key in data) {
+            if (Object.keys(this.form).includes(key)) {
+              this.form[key] = data[key];
+            }
+          }
+          const splitLngLat = data.lnglat.split(",");
+          const lnglat = {
+            lng: splitLngLat[0],
+            lat: splitLngLat[1],
+          };
+          this.$refs.amap.serMarker(lnglat);
+          this.$refs.cityArea.initDefaultArea(data.region);
+        })
+        .catch((error) => {});
     },
     //重置表单
     reset(formName) {
@@ -139,7 +189,7 @@ export default {
 </script>
 <style lass="scss" scoped>
 .address-map {
-  width: 80%;
+  width: 90%;
   height: 400px;
   border: 1px solid #fff;
   border-radius: 20px;

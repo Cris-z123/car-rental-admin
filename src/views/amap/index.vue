@@ -19,7 +19,14 @@ export default {
       events: {},
     };
   },
+  props: {
+    options: {
+      type: Object,
+      default: () => {},
+    },
+  },
   mounted() {
+    //加载地图的API
     lazyAMapApiLoaderInstance.load().then(() => {
       this.map = new AMap.Map("amapContainer", {
         center: [116.404765, 39.918052],
@@ -39,6 +46,16 @@ export default {
         center: [116.404765, 39.918052],
         zoom: this.zoom, //初始化地图层级
       });
+      this.map.on("complete", () => {
+        this.mapLoad();
+      });
+    },
+    mapLoad() {
+      if (this.options.mapLoad) {
+        this.$emit("callback", {
+          function: "mapLoad",
+        });
+      }
     },
     mapDestroy() {
       this.map && this.map.destroy();

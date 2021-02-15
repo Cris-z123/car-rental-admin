@@ -1,6 +1,8 @@
 <template>
   <el-cascader
     v-model="value"
+    :class="{ 'cascader-input': initFontColor }"
+    :placeholder="initArea"
     :options="cascader_options"
     :props="cascader_props"
     @change="changeValue"
@@ -63,9 +65,17 @@ export default {
           }
         },
       },
+      initArea: "请选择省市区",
+      initFontColor: false,
     };
   },
   methods: {
+    initDefaultArea(value) {
+      if (value) {
+        this.initFontColor = true;
+        this.initArea = value.split(",").join("/");
+      }
+    },
     changeValue(value) {
       this.$emit("update:cityAreaValue", value.join());
       // 匹配最后一项，区县
@@ -110,6 +120,23 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.cascader-input {
+  input::-webkit-input-placeholder {
+    color: #606266;
+  }
+  :-moz-placeholder {
+    color: #606266;
+  }
+  ::-moz-placeholder {
+    color: #606266;
+  }
+  input:-ms-input-placeholder {
+    color: #606266;
+  }
+  input::-ms-input-placeholder {
+    color: #606266;
+  }
+}
 </style>
 <!--
 1、组件传入的属性用 props 接收；
