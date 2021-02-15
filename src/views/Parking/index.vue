@@ -193,7 +193,7 @@ export default {
     },
     edit(id) {
       this.$router.push({
-        name: parkingAdd,
+        name: "ParkingAdd",
         query: {
           id,
         },
