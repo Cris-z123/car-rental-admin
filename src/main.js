@@ -6,6 +6,7 @@ import store from "./store";
 import "./plugins/aMap";
 // 守卫路由
 import "./router/permit";
+import "./router/title";
 // svgIcon
 import "./icon";
 // 导入elementui
@@ -13,6 +14,7 @@ import "./plugins/elementui";
 // 导入Composition API模块
 import "./plugins/compositionApi";
 Vue.config.productionTip = false;
+
 
 new Vue({
   router,
