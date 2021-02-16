@@ -64,8 +64,6 @@
           v-model="slotData.data.status"
           @change="switchChange(slotData.data)"
           :disabled="switch_disabled === slotData.data.id"
-          active-value="2"
-          inactive-value="1"
           active-color="#13ce66"
           inactive-color="#ff4949"
         >
@@ -141,7 +139,7 @@ export default {
           pageNumber: 1,
         },
       },
-      parking_status: this.$store.state.config.parking_status,
+      parking_status: this.$store.state.config.radio_disabled,
       parking_type: this.$store.state.config.parking_type,
       pageSize: 10,
       pageNumber: 1,

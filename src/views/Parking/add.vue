@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       id: this.$route.query.id,
-      status: this.$store.state.config.parking_status,
+      status: this.$store.state.config.radio_disabled,
       type: this.$store.state.config.parking_type,
       option_map: {
         mapLoad: true,
