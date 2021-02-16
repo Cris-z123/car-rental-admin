@@ -36,6 +36,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-else-if="item.type === 'image'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+        >
+          <template slot-scope="scope">
+            <img :src="scope.row.imgUrl" :width="item.imgWidth || 50" alt="" />
+          </template>
+        </el-table-column>
+        <el-table-column
           v-else
           :key="item.prop"
           :prop="item.prop"

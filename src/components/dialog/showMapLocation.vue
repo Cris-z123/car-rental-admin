@@ -6,7 +6,7 @@
     :title="data.parkingName"
     :visible.sync="dialogVisible"
     class="cars-dialog-center"
-    @open="opened"
+    @opened="opened"
     @close="close"
     :close-on-click-modal="false"
   >
