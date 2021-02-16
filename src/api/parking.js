@@ -40,3 +40,12 @@ export function parkingDelete(data = {}) {
         data
     })
 }
+
+
+export function parkingStatus(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/parking/status/",
+        data
+    })
+}

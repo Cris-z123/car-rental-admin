@@ -170,7 +170,7 @@ export default {
             lng: splitLngLat[0],
             lat: splitLngLat[1],
           };
-          this.$refs.amap.serMarker(lnglat);
+          this.$refs.amap.setMarker(lnglat);
           this.$refs.cityArea.initDefaultArea(data.region);
         })
         .catch((error) => {});

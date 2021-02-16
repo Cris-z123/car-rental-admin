@@ -1,6 +1,12 @@
 <template>
   <div>
-    <el-table :data="table_data" border style="width: 100%">
+    <el-table
+      :data="table_data"
+      v-loading="loading_table"
+      element-loading-text="拼命加载中"
+      border
+      style="width: 100%"
+    >
       <el-table-column
         v-if="table_config.checkbox"
         type="selection"
@@ -25,8 +31,8 @@
           :prop="item.prop"
           :label="item.label"
         >
-          <template slot-scope="scoped">
-            <slot :name="item.slotName" :data="scoped.row"></slot>
+          <template slot-scope="scope">
+            <slot :name="item.slotName" :data="scope.row"></slot>
           </template>
         </el-table-column>
         <el-table-column
@@ -60,6 +66,7 @@ export default {
   name: "TableComponent",
   data() {
     return {
+      loading_table: true,
       table_data: [],
       table_config: {
         thead: [],
@@ -86,13 +93,19 @@ export default {
         url: this.table_config.url,
         data: this.table_config.data,
       };
-      GetTableData(requestData).then((response) => {
-        const data = response.data;
-        if (data) {
-          this.table_data = data.data;
-        }
-        this.total = data.total;
-      });
+      this.loading_table = true;
+      GetTableData(requestData)
+        .then((response) => {
+          const data = response.data;
+          if (data) {
+            this.table_data = data.data;
+          }
+          this.total = data.total;
+          this.loading_table = false;
+        })
+        .catch((error) => {
+          this.loading_table = false;
+        });
     },
     requestData(params = "") {
       if (params) {

@@ -6,7 +6,7 @@
     :title="data.parkingName"
     :visible.sync="dialogVisible"
     class="cars-dialog-center"
-    @open="open"
+    @open="opened"
     @close="close"
     :close-on-click-modal="false"
   >
@@ -39,7 +39,7 @@ export default {
     };
   },
   methods: {
-    open() {
+    opened() {
       this.$refs.aMap.mapCreate();
       this.$nextTick(() => {
         const splitLngLat = this.data.lnglat.split(",");
@@ -47,7 +47,7 @@ export default {
           lng: splitLngLat[0],
           lat: splitLngLat[1],
         };
-        this.$refs.aMap.serMarker(lnglat);
+        this.$refs.aMap.setMarker(lnglat);
       });
     },
     close() {

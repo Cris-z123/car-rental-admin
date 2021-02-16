@@ -62,6 +62,8 @@
       <template v-slot:status="slotData">
         <el-switch
           v-model="slotData.data.status"
+          @change="switchChange(slotData.data)"
+          :disabled="switch_disabled === slotData.data.id"
           active-value="2"
           inactive-value="1"
           active-color="#13ce66"
@@ -89,7 +91,8 @@
 </template>
 <script>
 import { GetCity } from "@/api/common";
-import { parkingAdd, parkingDelete } from "@/api/parking";
+import { parkingAdd, parkingDelete, parkingStatus } from "@/api/parking";
+import { address } from "@/utils/common";
 import CityArea from "@c/common/cityArea";
 import Table from "@c/table/table";
 import showMapLocation from "@c/dialog/showMapLocation";
@@ -119,16 +122,7 @@ export default {
             prop: "address",
             type: "function",
             callback: (row, prop) => {
-              let address = row[prop];
-              let addressInfo = "";
-              if (address) {
-                let split = address.split(",");
-                addressInfo += split[0];
-                if (split[1]) {
-                  addressInfo += `<br/>${split[1]}`;
-                }
-              }
-              return addressInfo;
+              address(row[prop]);
             },
           },
           { label: "可停放车辆", prop: "carsNumber" },
@@ -161,6 +155,7 @@ export default {
       map_show: false,
       parking_loaction: {},
       table_loading: false,
+      switch_disabled: "",
     };
   },
   methods: {
@@ -190,6 +185,24 @@ export default {
         requestData[this.search_key] = this.keyword;
       }
       this.$refs.table.requestData(requestData);
+    },
+    switchChange(data) {
+      const requestData = {
+        id: data.id,
+        status: data.status,
+      };
+      this.switch_disabled = data.id;
+      parkingStatus(requestData)
+        .then((response) => {
+          this.$message({
+            type: "success",
+            message: response.message,
+          });
+          this.switch_disabled = "";
+        })
+        .catch((error) => {
+          this.switch_disabled = "";
+        });
     },
     edit(id) {
       this.$router.push({
