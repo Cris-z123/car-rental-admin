@@ -58,7 +58,7 @@
       </el-row>
     </div>
     <!-- 表格数据 -->
-    <Table ref="table" :config="table_config">
+    <VueTable ref="table" :config="table_config">
       <template v-slot:status="slotData">
         <el-switch
           v-model="slotData.data.status"
@@ -80,7 +80,7 @@
         >
         <el-button size="small" @click="del(slotData.data.id)">删除</el-button>
       </template>
-    </Table>
+    </VueTable>
     <showMapLocation
       :flagVisible.sync="map_show"
       :data="parking_loaction"
@@ -92,11 +92,11 @@ import { GetCity } from "@/api/common";
 import { parkingAdd, parkingDelete, parkingStatus } from "@/api/parking";
 import { address } from "@/utils/common";
 import CityArea from "@c/common/cityArea";
-import Table from "@c/table/table";
+import VueTable from "@c/table/VueTable";
 import showMapLocation from "@c/dialog/showMapLocation";
 export default {
   name: "Parking",
-  components: { CityArea, showMapLocation, Table },
+  components: { CityArea, showMapLocation, VueTable },
   data() {
     return {
       table_config: {

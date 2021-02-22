@@ -30,7 +30,7 @@
       </el-row>
     </div>
     <!-- 表格数据 -->
-    <Table ref="table" :config="table_config">
+    <VueTable ref="table" :config="table_config">
       <template v-slot:status="slotData">
         <el-switch
           v-model="slotData.data.status"
@@ -47,7 +47,7 @@
         >
         <el-button size="small" @click="del(slotData.data.id)">删除</el-button>
       </template>
-    </Table>
+    </VueTable>
     <AddCarsBrand
       :flagVisible.sync="dialog_show"
       :data="data_brand"
@@ -56,11 +56,11 @@
 </template>
 <script>
 import AddCarsBrand from "@c/dialog/addCarsBrand";
-import Table from "@c/table/table";
+import VueTable from "@c/table/VueTable";
 import { brandDelete, brandStatus } from "@/api/brand";
 export default {
   name: "Parking",
-  components: { AddCarsBrand, Table },
+  components: { AddCarsBrand, VueTable },
   data() {
     return {
       // 弹窗标记
