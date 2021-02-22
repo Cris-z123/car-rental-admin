@@ -25,63 +25,6 @@
         </div>
       </template>
     </VueForm>
-    <!-- <el-form ref="form" :rules="rules" :model="form" label-width="120px">
-      <el-form-item label="停车场名称" prop="parkingName">
-        <el-input v-model="form.parkingName"></el-input>
-      </el-form-item>
-      <el-form-item label="区域" prop="area">
-        <CityArea
-          ref="cityArea"
-          :mapLocation="true"
-          :cityAreaValue.sync="form.area"
-          @callback="callbackComponent"
-        />
-      </el-form-item>
-      <el-form-item label="类型">
-        <el-radio-group v-model="form.type">
-          <el-radio
-            v-for="item in type"
-            :label="item.value"
-            :key="item.value"
-            >{{ item.label }}</el-radio
-          >
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="可停放车辆" prop="carsNumber">
-        <el-input v-model.number="form.carsNumber"></el-input>
-      </el-form-item>
-      <el-form-item label="禁启用">
-        <el-radio-group v-model="form.status">
-          <el-radio
-            v-for="item in status"
-            :label="item.value"
-            :key="item.value"
-            >{{ item.label }}</el-radio
-          >
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="位置">
-        <div class="address-map">
-          <AMap
-            ref="amap"
-            :options="option_map"
-            @callback="callbackComponent"
-            @getLngLat="lnglatValue"
-          />
-        </div>
-      </el-form-item>
-      <el-form-item label="经纬度" prop="lnglat">
-        <el-input v-model="form.lnglat"></el-input>
-      </el-form-item> -->
-    <!-- <el-form-item>
-        <el-button
-          type="danger"
-          @click="onSubmit('form')"
-          :loading="button_loading"
-          >提交</el-button
-        >
-      </el-form-item>
-    </el-form> -->
   </div>
 </template>
 <script>
