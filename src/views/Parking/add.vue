@@ -1,6 +1,31 @@
 <template>
   <div class="parking-add">
-    <el-form ref="form" :rules="rules" :model="form" label-width="120px">
+    <VueForm
+      ref="vueForm"
+      :formItem="formItem"
+      :formHandler="formHandler"
+      :formData="formData"
+    >
+      <template v-slot:city>
+        <CityArea
+          ref="cityArea"
+          :mapLocation="true"
+          :cityAreaValue.sync="form.area"
+          @callback="callbackComponent"
+        />
+      </template>
+      <template v-slot:amap>
+        <div class="address-map">
+          <AMap
+            ref="amap"
+            :options="option_map"
+            @callback="callbackComponent"
+            @getLngLat="lnglatValue"
+          />
+        </div>
+      </template>
+    </VueForm>
+    <!-- <el-form ref="form" :rules="rules" :model="form" label-width="120px">
       <el-form-item label="停车场名称" prop="parkingName">
         <el-input v-model="form.parkingName"></el-input>
       </el-form-item>
@@ -47,8 +72,8 @@
       </el-form-item>
       <el-form-item label="经纬度" prop="lnglat">
         <el-input v-model="form.lnglat"></el-input>
-      </el-form-item>
-      <el-form-item>
+      </el-form-item> -->
+    <!-- <el-form-item>
         <el-button
           type="danger"
           @click="onSubmit('form')"
@@ -56,7 +81,7 @@
           >提交</el-button
         >
       </el-form-item>
-    </el-form>
+    </el-form> -->
   </div>
 </template>
 <script>
@@ -64,11 +89,86 @@
 import AMap from "../amap";
 // 组件
 import CityArea from "@c/common/cityArea";
+import VueForm from "@c/form/VueForm";
 import { parkingAdd, parkingDetailed, parkingEdit } from "@/api/parking";
 export default {
   name: "ParkingAdd",
   data() {
     return {
+      formData: {
+        parkingName: "",
+        area: "",
+        type: "",
+        carsNumber: "",
+        status: "",
+        lnglat: "",
+        content: "",
+      },
+      formItem: [
+        {
+          type: "Input",
+          prop: "parkingName",
+          label: "停车场名称",
+          placeholder: "请输入停车场名称",
+          rules: [
+            {
+              required: true,
+              message: "停车场名称不能为空",
+              trigger: "change",
+            },
+          ],
+        },
+        {
+          type: "Slot",
+          slotName: "city",
+          prop: "area",
+          label: "区域",
+          rules: [
+            { required: true, message: "区域选择不能为空", trigger: "change" },
+          ],
+        },
+        {
+          type: "Radio",
+          options: this.$store.state.config.parking_type,
+          prop: "type",
+          label: "类型",
+        },
+        {
+          type: "Input",
+          prop: "carsNumber",
+          label: "可停放车辆",
+          placeholder: "请输入可停放车辆数",
+          rules: [{ required: true, type: "number", message: "请输入数字" }],
+        },
+        {
+          type: "Radio",
+          options: this.$store.state.config.radio_disabled,
+          prop: "status",
+          label: "禁启用",
+        },
+        {
+          type: "Slot",
+          slotName: "amap",
+          label: "位置",
+        },
+        {
+          type: "Input",
+          prop: "lnglat",
+          label: "经纬度",
+          placeholder: "请从地图中选择停车场位置",
+          readonly: true,
+          rules: [
+            { required: true, message: "区域选择不能为空", trigger: "change" },
+          ],
+        },
+      ],
+      formHandler: [
+        {
+          type: "danger",
+          label: "确定",
+          handler: () => this.onSubmit(),
+        },
+      ],
       id: this.$route.query.id,
       status: this.$store.state.config.radio_disabled,
       type: this.$store.state.config.parking_type,
@@ -84,20 +184,10 @@ export default {
         lnglat: "",
         content: "",
       },
-      rules: {
-        parkingName: [
-          { required: true, message: "请输入停车场名称", trigger: "change" },
-        ],
-        carsNumber: [{ type: "number", message: "请输入数字" }],
-        area: [{ required: true, message: "请输入区域", trigger: "change" }],
-        lnglat: [
-          { required: true, message: "请输入经纬度", trigger: "change" },
-        ],
-      },
       button_loading: false,
     };
   },
-  components: { AMap, CityArea },
+  components: { AMap, CityArea, VueForm },
   beforeMount() {},
   mounted() {},
   methods: {
@@ -112,8 +202,8 @@ export default {
     setMapCenter(data) {
       this.$refs.amap.setMapCenter(data.address);
     },
-    onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
+    onSubmit() {
+      this.$refs.vueForm.$refs.form.validate((valid) => {
         if (valid) {
           this.id ? this.editParking() : this.addParking();
         } else {
@@ -138,7 +228,7 @@ export default {
         });
     },
     editParking() {
-      let requestData = JSON.parse(JSON.stringify(this.form));
+      let requestData = JSON.parse(JSON.stringify(this.formData));
       requestData.id = this.id;
       this.button_loading = true;
       parkingEdit(requestData)
@@ -161,8 +251,8 @@ export default {
         .then((response) => {
           const data = response.data;
           for (let key in data) {
-            if (Object.keys(this.form).includes(key)) {
-              this.form[key] = data[key];
+            if (Object.keys(this.formData).includes(key)) {
+              this.formData[key] = data[key];
             }
           }
           const splitLngLat = data.lnglat.split(",");
@@ -182,7 +272,7 @@ export default {
       this.$refs.amap.clearMarker();
     },
     lnglatValue(e) {
-      this.form.lnglat = e.value;
+      this.formData.lnglat = e.value;
     },
   },
 };
