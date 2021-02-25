@@ -11,14 +11,13 @@
     :close-on-click-modal="false"
   >
     <!--内容区-->
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="品牌中文" prop="nameCh">
-        <el-input v-model="form.nameCh"></el-input>
-      </el-form-item>
-      <el-form-item label="品牌英文" prop="nameEn">
-        <el-input v-model="form.nameEn"></el-input>
-      </el-form-item>
-      <el-form-item label="LOGO" prop="imgUrl">
+    <vue-form
+      ref="vueForm"
+      :formItem="formItem"
+      :formHandler="formHandler"
+      :formData="formData"
+    >
+      <template v-slot:logo>
         <div class="upload-img-wrap">
           <div class="upload-img">
             <img v-show="logo_current" :src="logo_current" />
@@ -33,21 +32,8 @@
             </li>
           </ul>
         </div>
-      </el-form-item>
-      <el-form-item label="禁启用" prop="status">
-        <el-radio-group v-model="form.status">
-          <el-radio
-            v-for="item in radio_disabled"
-            :label="item.value"
-            :key="item.id"
-            >{{ item.label }}</el-radio
-          >
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="danger" @click="submit">确定</el-button>
-      </el-form-item>
-    </el-form>
+      </template>
+    </vue-form>
     <!-- <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -57,9 +43,10 @@
 
 <script>
 import { brandLogo, brandAdd, brandEdit } from "@/api/brand";
+import VueForm from "@c/form/VueForm";
 export default {
   name: "",
-  components: {},
+  components: { VueForm },
   props: {
     flagVisible: {
       type: Boolean,
@@ -72,17 +59,58 @@ export default {
   },
   data() {
     return {
-      // 弹窗显示/关闭标记
-      dialogVisible: false,
-      // 表单
-      form: {
+      formData: {
         nameCh: "",
         nameEn: "",
         imgUrl: "",
         status: "",
         content: "",
       },
-      radio_disabled: this.$store.state.config.radio_disabled,
+      formItem: [
+        {
+          type: "Input",
+          prop: "nameCh",
+          label: "品牌名称",
+          placeholder: "请输入车辆品牌名称",
+          rules: [
+            {
+              required: true,
+              message: "车辆品牌名称不能为空",
+              trigger: "change",
+            },
+          ],
+        },
+        {
+          type: "Input",
+          prop: "nameEn",
+          label: "品牌英文",
+          placeholder: "请输入车辆品牌英文名称",
+        },
+        {
+          type: "Slot",
+          slotName: "logo",
+          prop: "imgUrl",
+          label: "LOGO",
+          rules: [
+            { required: true, message: "LOGO选择不能为空", trigger: "change" },
+          ],
+        },
+        {
+          type: "Radio",
+          options: this.$store.state.config.radio_disabled,
+          prop: "status",
+          label: "禁启用",
+        },
+      ],
+      formHandler: [
+        {
+          type: "danger",
+          label: "确定",
+          handler: () => this.submit(),
+        },
+      ],
+      // 弹窗显示/关闭标记
+      dialogVisible: false,
       logo_current: "",
       logo: [],
     };
@@ -106,40 +134,47 @@ export default {
         .catch((error) => {});
     },
     getDetailed() {
-      this.form = this.data;
+      this.formData = this.data;
       this.logo_current = this.data.imgUrl;
-      this.form.imgUrl = this.logo_current;
+      this.formData.imgUrl = this.logo_current;
     },
     submit() {
       this.data.id ? this.edit() : this.add();
     },
     add() {
-      brandAdd(this.form)
+      this.formData.imgUrl = this.logo_current;
+      brandAdd(this.formData)
         .then((response) => {
           this.$message({
             type: "success",
             message: response.message,
           });
-          this.reset("form");
+          this.close();
         })
         .catch((error) => {});
     },
     edit() {
-      const requestData = JSON.parse(JSON.stringify(this.form));
+      this.formData.imgUrl = this.logo_current;
+      const requestData = JSON.parse(JSON.stringify(this.formData));
       brandEdit(requestData)
         .then((response) => {
           this.$message({
             type: "success",
             message: response.message,
           });
+          this.close();
         })
         .catch((error) => {});
     },
-    reset(formName) {
-      this.$refs[formName].resetFields();
+    reset() {
+      for (let key in this.formData) {
+        this.formData[key] = "";
+      }
       this.logo_current = "";
     },
     close() {
+      this.reset();
+      this.dialogVisible = false;
       this.$emit("update:flagVisible", false); // {}
     },
   },
