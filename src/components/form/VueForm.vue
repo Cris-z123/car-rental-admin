@@ -15,6 +15,19 @@
         :disabled="item.disabled"
         :readonly="item.readonly"
       ></el-input>
+      <el-select
+        v-if="item.type === 'Select'"
+        :placeholder="item.placeholder"
+        v-model="formData[item.prop]"
+        :disabled="item.disabled"
+      >
+        <el-option
+          v-for="selectItem in item.options"
+          :key="selectItem.value"
+          :label="selectItem.label"
+          :value="selectItem.value"
+        ></el-option>
+      </el-select>
       <slot v-if="item.type === 'Slot'" :name="item.slotName"></slot>
       <el-radio-group
         v-if="item.type === 'Radio'"

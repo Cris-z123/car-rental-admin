@@ -19,3 +19,19 @@ export function GetTableData(params = {}) {
         data: params.data
     })
 }
+
+export function getCarsBrand(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/common/getCarsBrand",
+        data
+    })
+}
+
+export function getParking(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/common/getParking/",
+        data
+    })
+}
