@@ -86,7 +86,13 @@ export default {
               return `${row.nameCh} / ${row.nameEn}`;
             },
           },
-          { label: "禁启用", prop: "status", type: "slot", slotName: "status" },
+          {
+            label: "禁启用",
+            prop: "status",
+            type: "slot",
+            slotName: "status",
+            width: "80px",
+          },
           { label: "操作", type: "slot", slotName: "operation" },
         ],
         url: "brandList",

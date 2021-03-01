@@ -114,6 +114,7 @@ export default {
                 return data[0].label;
               }
             },
+            width: "80px",
           },
           {
             label: "区域",
@@ -123,13 +124,20 @@ export default {
               address(row[prop]);
             },
           },
-          { label: "可停放车辆", prop: "carsNumber" },
-          { label: "禁启用", prop: "status", type: "slot", slotName: "status" },
+          { label: "可停放车辆", prop: "carsNumber", width: "120px" },
+          {
+            label: "禁启用",
+            prop: "status",
+            type: "slot",
+            slotName: "status",
+            width: "80px",
+          },
           {
             label: "查看位置",
             prop: "lnglat",
             type: "slot",
             slotName: "lnglat",
+            width: "120px",
           },
           { label: "操作", type: "slot", slotName: "operation" },
         ],

@@ -18,6 +18,7 @@
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
         >
           <template slot-scope="scope">
             <span
@@ -30,6 +31,7 @@
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
         >
           <template slot-scope="scope">
             <slot :name="item.slotName" :data="scope.row"></slot>
@@ -51,6 +53,7 @@
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
         ></el-table-column>
       </template>
     </el-table>

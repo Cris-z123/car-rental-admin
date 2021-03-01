@@ -52,19 +52,17 @@
         </div>
       </template>
       <template v-slot:carattr>
-        <div
-          class="cars-attr-list"
-          v-for="(item, index) in cars_attr"
-          :key="item.key"
-        >
+        <el-button type="primary" @click="addCarsAttr">添加汽车属性</el-button>
+        <div class="cars-attr-list" v-for="item in cars_attr" :key="item.key">
           <el-row :gutter="10">
-            <el-col :span="2"><el-input value="100"></el-input></el-col>
-            <el-col :span="3"><el-input value="100"></el-input></el-col>
+            <el-col :span="2"
+              ><el-input v-model="item.attrKey"></el-input
+            ></el-col>
+            <el-col :span="3"
+              ><el-input v-model="item.attrValue"></el-input
+            ></el-col>
             <el-col :span="6">
-              <el-button type="primary" v-if="index == 0" @click="addCarsAttr"
-                >+</el-button
-              >
-              <el-button v-else>-</el-button>
+              <el-button @click="removeCarsAttr">-</el-button>
             </el-col>
           </el-row>
         </div>
@@ -80,6 +78,7 @@
 import Editor from "wangeditor";
 import VueForm from "@c/form/VueForm";
 import { getCarsBrand, getParking } from "@/api/common";
+import { addCars } from "@/api/cars";
 export default {
   name: "ParkingAdd",
   components: { VueForm },
@@ -96,8 +95,8 @@ export default {
         maintainDate: "",
         gear: 1,
         energyType: 1,
-        electric: "",
-        oil: "",
+        electric: 0,
+        oil: 0,
         status: true,
         carsAttr: "",
         content: "",
@@ -118,11 +117,10 @@ export default {
           ],
         },
         {
-          type: "Select",
+          type: "Input",
           prop: "carsMode",
           label: "车辆型号",
-          options: [],
-          placeholder: "请选择车辆型号",
+          placeholder: "请输入车辆型号",
           rules: [
             {
               required: true,
@@ -182,6 +180,13 @@ export default {
           options: this.$store.state.config.year_check,
           prop: "yearCheck",
           label: "年检",
+          rules: [
+            {
+              required: true,
+              message: "请选择年检状态",
+              trigger: "change",
+            },
+          ],
         },
         {
           type: "Slot",
@@ -229,12 +234,7 @@ export default {
       ],
       // 富文本对象
       editor: null,
-      cars_attr: [
-        { key1: 111, value1: 222 },
-        { key2: 111, value2: 222 },
-        { key3: 111, value3: 222 },
-        { key4: 111, value4: 222 },
-      ],
+      cars_attr: [],
       energyType: this.$store.state.config.energy_type,
     };
   },
@@ -246,9 +246,26 @@ export default {
     this.createEditor();
   },
   methods: {
+    /** 提交表单 */
     onSubmit() {
-      console.log("submit!");
+      this.formatCarsAttr();
+      this.$refs.vueForm.$refs.form.validate((valid) => {
+        if (valid) {
+          addCars(this.formData)
+            .then((response) => {
+              this.$message({
+                type: "success",
+                message: response.message,
+              });
+            })
+            .catch((error) => {});
+        } else {
+          console.log("error submit");
+          return false;
+        }
+      });
     },
+    /** 获取车辆品牌列表 */
     getCarsBrandList() {
       getCarsBrand()
         .then((response) => {
@@ -264,6 +281,7 @@ export default {
         })
         .catch((error) => {});
     },
+    /** 获取停车场列表 */
     getParkingList() {
       getParking()
         .then((response) => {
@@ -281,12 +299,31 @@ export default {
     },
     /** 添加车辆属性 */
     addCarsAttr() {
-      this.cars_attr.push({ key4: 111, value4: 222 });
+      this.cars_attr.push({ attrKey: "", attrValue: "" });
+    },
+    /** 移除车辆属性 */
+    removeCarsAttr(index) {
+      this.cars_attr.splice(index, 1);
+    },
+    /** 格式化车辆属性数据 */
+    formatCarsAttr() {
+      const carsAttrData = {};
+      if (this.cars_attr.length === 0) {
+        return false;
+      }
+      this.cars_attr.forEach((item) => {
+        if (item.attrKey) {
+          carsAttrData[item.attrKey] = item.attrValue;
+        }
+      });
+      this.formData.carsAttr = JSON.stringify(carsAttrData);
     },
     /** 创建富文本对象 */
     createEditor() {
       this.editor = new Editor(this.$refs.editorDom);
-      this.editor.customConfig.onchange = (html) => {};
+      this.editor.customConfig.onchange = (html) => {
+        this.formData.content = html;
+      };
       this.editor.create(); // 创建富文本实例
     },
   },
@@ -294,4 +331,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "./style.scss";
+.cars-attr-list {
+  margin-top: 15px;
+  overflow: hidden;
+}
 </style>
