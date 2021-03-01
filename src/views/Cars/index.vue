@@ -58,8 +58,7 @@
   </div>
 </template>
 <script>
-import { parkingAdd, carsDelete, carsStatus } from "@/api/cars";
-import { address } from "@/utils/common";
+import { carsDelete, carsStatus } from "@/api/cars";
 import VueTable from "@c/table/VueTable";
 export default {
   name: "Parking",
@@ -115,7 +114,6 @@ export default {
           pageNumber: 1,
         },
       },
-      parking_status: this.$store.state.config.radio_disabled,
       year_check: this.$store.state.config.year_check,
       energy_type: this.$store.state.config.energy_type,
       pageSize: 10,
@@ -127,7 +125,6 @@ export default {
       },
       search_key: "",
       keyword: "",
-      parking_loaction: {},
       table_loading: false,
       switch_disabled: "",
     };
@@ -138,12 +135,6 @@ export default {
         this[params.function](params.data);
       }
     },
-    // getType(value) {
-    //   const data = this.parking_type.filter((item) => item.value === value);
-    //   if (data && data.length > 0) {
-    //     return data[0].label;
-    //   }
-    // },
     search() {
       const requestData = {
         pageSize: this.pageSize,
