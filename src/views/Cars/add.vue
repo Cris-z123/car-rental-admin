@@ -330,7 +330,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "./style.scss";
 .cars-attr-list {
   margin-top: 15px;
   overflow: hidden;
