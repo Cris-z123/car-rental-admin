@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <el-image style="width: 100px; height: 100px" :src="url" fit></el-image>
+    <el-image class="el-image" :src="url" fit></el-image>
     <h2>欢迎进入汽车租赁管理后台</h2>
   </div>
 </template>
@@ -18,12 +18,17 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 200px;
+  margin: 120px;
   h2 {
     font-size: 36px;
     font-weight: 600;
+  }
+  .el-image {
+    width: 200px;
+    height: 200px;
   }
 }
 </style>
