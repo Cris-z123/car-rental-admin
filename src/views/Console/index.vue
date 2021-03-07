@@ -1,18 +1,16 @@
 <template>
   <div class="wrapper">
-    <el-image class="el-image" :src="url" fit></el-image>
+    <el-image
+      class="el-image"
+      src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+      fit="contain"
+    ></el-image>
     <h2>欢迎进入汽车租赁管理后台</h2>
   </div>
 </template>
 <script>
 export default {
-  data() {
-    return {
-      fit: ["fill"],
-      url:
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-    };
-  },
+  data() {},
 };
 </script>
 <style lang="scss" scoped>
