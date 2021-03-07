@@ -24,3 +24,19 @@ export function carsDelete(data = {}) {
         data
     })
 }
+
+export function carsDetailed(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/cars/detailed/",
+        data
+    })
+}
+
+export function carsEdit(data = {}) {
+    return service.request({
+        method: "post",
+        url: "/cars/edit/",
+        data
+    })
+}

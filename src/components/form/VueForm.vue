@@ -77,6 +77,9 @@ export default {
   },
   methods: {
     initFormData() {},
+    resetForm() {
+      this.$refs.form.resetFiedlds();
+    },
   },
   watch: {
     formItem: {

@@ -68,20 +68,23 @@
         </div>
       </template>
       <template v-slot:cardesc>
-        <div ref="editorDom" style="text-align: left"></div>
+        <Editor
+          ref="wangEditor"
+          :value="formData.content"
+          :content.sync="formData.content"
+        />
       </template>
     </vue-form>
   </div>
 </template>
 <script>
-// 富文本编辑器
-import Editor from "wangeditor";
+import Editor from "@c/common/wangEditor";
 import VueForm from "@c/form/VueForm";
 import { getCarsBrand, getParking } from "@/api/common";
-import { addCars } from "@/api/cars";
+import { addCars, carsDetailed, carsEdit } from "@/api/cars";
 export default {
   name: "ParkingAdd",
-  components: { VueForm },
+  components: { VueForm, Editor },
   data() {
     return {
       formData: {
@@ -232,18 +235,15 @@ export default {
           handler: () => this.onSubmit(),
         },
       ],
-      // 富文本对象
-      editor: null,
       cars_attr: [],
       energyType: this.$store.state.config.energy_type,
+      id: this.$route.query.id,
     };
   },
   beforeMount() {
     this.getCarsBrandList();
     this.getParkingList();
-  },
-  mounted() {
-    this.createEditor();
+    this.getCarsDetailed();
   },
   methods: {
     /** 提交表单 */
@@ -251,16 +251,12 @@ export default {
       this.formatCarsAttr();
       this.$refs.vueForm.$refs.form.validate((valid) => {
         if (valid) {
-          addCars(this.formData)
-            .then((response) => {
-              this.$message({
-                type: "success",
-                message: response.message,
-              });
-            })
-            .catch((error) => {});
+          this.id ? this.addCarsDetailed() : this.editCarsDetailed();
         } else {
-          console.log("error submit");
+          this.$message({
+            type: "warning",
+            message: "表单内容有误，请修改",
+          });
           return false;
         }
       });
@@ -297,6 +293,57 @@ export default {
         })
         .catch((error) => {});
     },
+    /** 新增汽车详情 */
+    addCarsDetailed() {
+      addCars(this.formData)
+        .then((response) => {
+          this.$message({
+            type: "success",
+            message: response.message,
+          });
+          this.$refs.vueForm.resetForm();
+          this.cars_attr = [];
+          this.$refs.wangEditor.clearContent();
+        })
+        .catch((error) => {});
+    },
+    /** 编辑汽车详情 */
+    editCarsDetailed() {
+      carsEdit({ ...this.formData, id: this.id })
+        .then((response) => {
+          this.$message({
+            type: "success",
+            message: response.message,
+          });
+          this.$refs.vueForm.resetForm();
+          this.cars_attr = [];
+          this.$refs.wangEditor.clearContent();
+        })
+        .catch();
+    },
+    /** 获取汽车详情 */
+    getCarsDetailed() {
+      if (!this.id) return false;
+      carsDetailed({ id: this.id })
+        .then((response) => {
+          const data = response.data;
+          for (let key in data) {
+            if (Object.keys(this.formData).includes(key)) {
+              this.formData[key] = data[key];
+            }
+          }
+          const carsAttr = JSON.parse(data.carsAttr);
+          const arr = [];
+          for (let key in carsAttr) {
+            const json = {};
+            json.attrKey = key;
+            json.attrValue = carsAttr[key];
+            arr.push(json);
+          }
+          this.cars_attr = arr;
+        })
+        .catch();
+    },
     /** 添加车辆属性 */
     addCarsAttr() {
       this.cars_attr.push({ attrKey: "", attrValue: "" });
@@ -317,14 +364,6 @@ export default {
         }
       });
       this.formData.carsAttr = JSON.stringify(carsAttrData);
-    },
-    /** 创建富文本对象 */
-    createEditor() {
-      this.editor = new Editor(this.$refs.editorDom);
-      this.editor.customConfig.onchange = (html) => {
-        this.formData.content = html;
-      };
-      this.editor.create(); // 创建富文本实例
     },
   },
 };
