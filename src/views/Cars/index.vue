@@ -192,12 +192,7 @@ export default {
             this.$refs.table.requestData();
           });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+        .catch(() => {});
     },
   },
 };
