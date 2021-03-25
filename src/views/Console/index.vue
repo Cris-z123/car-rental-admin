@@ -6,11 +6,27 @@
       fit="contain"
     ></el-image>
     <h2>欢迎进入汽车租赁管理后台</h2>
+    <ABC :value="id"></ABC>
+    <div class="el-image">{{ id }}</div>
+    <button @click="add">+1</button>
   </div>
 </template>
 <script>
+import ABC from "./abc.vue";
 export default {
-  data() {},
+  components: {
+    ABC,
+  },
+  data() {
+    return {
+      id: "123",
+    };
+  },
+  methods: {
+    add() {
+      this.id += 1;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
