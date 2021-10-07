@@ -37,8 +37,8 @@
           v-for="radio in item.options"
           :label="radio.value"
           :key="radio.value"
-          >{{ radio.label }}</el-radio
-        >
+          >{{ radio.label }}
+        </el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item>
@@ -47,8 +47,8 @@
         :key="item.key"
         :type="item.type"
         @click="item.handler && item.handler()"
-        >{{ item.label }}</el-button
-      >
+        >{{ item.label }}
+      </el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -78,7 +78,7 @@ export default {
   methods: {
     initFormData() {},
     resetForm() {
-      this.$refs.form.resetFiedlds();
+      this.$refs.form.resetFields();
     },
   },
   watch: {
@@ -92,5 +92,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
